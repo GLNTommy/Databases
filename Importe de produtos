@@ -1,0 +1,66 @@
+create database importe;
+
+create table categoria (
+	id int auto_increment,
+	descricao varchar(160) not null,
+	constraint categoria_pk primary key (id)
+	);
+
+create table produto (
+	cod int,
+	descricao varchar(160) not null,
+	preco float not null,
+	id_cat int not null,
+	constraint produto_pk primary key (cod),
+	constraint produto_fk foreign key (id_cat) references categoria (id),
+	constraint produto_ck check (preco > 0)
+	);
+
+
+create table nacional (
+	cod int,
+	icms double not null,
+	constraint nacional_pk primary key (cod),
+	constraint nacional_fk foreign key (cod) references produto (cod)
+	);
+
+
+create table importado (
+	cod int,
+	pais varchar(60) not null,
+	taxa double not null,
+	moeda varchar(20) not null,
+	constraint importado_pk primary key (cod),
+	constraint importado_fk foreign key (cod) references produto (cod)
+	);
+
+create table vendedor (
+	cod int,
+	nome varchar(120) not null,
+	constraint vendedor_pk primary key (cod)
+	);
+
+create table vend_fone (
+	cod int,
+	fone int,
+	constraint vend_fone_pk primary key (cod, fone),
+	constraint vend_fone_fk foreign key (cod) references vendedor (cod)
+	);
+
+
+create table regiao (
+	id int auto_increment,
+	nome varchar(120) not null,
+	cod_vend int not null,
+	constraint regiao_pk primary key (id),
+	constraint regiao_fk foreign key (cod_vend) references vendedor (cod)
+	);
+
+
+create table possui (
+	cod_prod int,
+	cod_vend int,
+	constraint possui_pk primary key (cod_prod, cod_vend),
+	constraint possui_prod_fk foreign key (cod_prod) references produto (cod),
+	constraint possui_vend_fk foreign key (cod_vend) references vendedor (cod)
+	);
